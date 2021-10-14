@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mtt
+  namespace: mtt
+  labels:
+    app: mtt
+spec:
+  ports:
+  - name: "mtt"
+    port: 80
+    targetPort: 80
+  selector:
+    app: mtt
+  type: LoadBalancer

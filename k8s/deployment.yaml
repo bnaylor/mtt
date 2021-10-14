@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mtt
+  namespace: mtt
+  labels:
+    app: mtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mtt
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mtt
+    spec:
+      containers:
+      - command:
+        - /app/run_container.sh
+        image: docker.io/bnaylor/mtt:1.0
+        imagePullPolicy: IfNotPresent
+        name: mtt
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: data
+          mountPath: /var/www/html/db
+          readOnly: false
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      priority: 0
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsUser: 0
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: mtt-data-claim
